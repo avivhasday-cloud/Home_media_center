@@ -1,6 +1,6 @@
 import logging
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, url_for
 from config import Config
 from torrent_downloader import TorrentDownloader
 from werkzeug.utils import secure_filename
@@ -15,10 +15,12 @@ torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PA
 @app.route('/', methods=["GET"])
 def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    return render_template('index.html', title="test", torrents=torrent_details_list)
+    return render_template('index.html', title="Homepage", torrents=torrent_details_list)
 
-@app.route('/download_torrent', methods=['POST'])
+@app.route('/download_torrent', methods=["GET", 'POST'])
 def download_torrent():
+    if request.method == 'GET':
+        return render_template('download_torrent.html', title="Download torrent")
     uploaded_file = request.files['file']
     filename = secure_filename(uploaded_file.filename)
     if filename != '':
@@ -26,7 +28,7 @@ def download_torrent():
         uploaded_file.save(file_path)
         logger.info(f"Uploaded {filename} to {app.config['UPLOAD_PATH']}")
         torrent_downloader.add_to_download_torrent_queue(file_path)
-        torrent_downloader.wait_for_thread_to_finish()
+    return url_for('/')
 
 
 
