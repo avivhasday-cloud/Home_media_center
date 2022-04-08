@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h1>Home media center</h1>
+    <table id="data" class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Hash</th>
+            <th>Seeds Number</th>
+            <th>Total Size</th>
+            <th>Download Speed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for torrent in torrents %}
+            <tr>
+              <td>{{ user.torrent_name }}</td>
+              <td>{{ user.hash }}</td>
+              <td>{{ user.num_of_seeds }}</td>
+              <td>{{ user.file_size }}</td>
+              <td>{{ user.download_speed }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+

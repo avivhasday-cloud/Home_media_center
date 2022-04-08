@@ -56,20 +56,20 @@ class TorrentDownloader:
                     self.logger.error(e.__traceback__)
                 torrent_file.close()
 
-    def get_torrents_details(self) -> str:
-        torrents = self.torrent_client.torrents()
-        torrent_details_str = """"""
+
+    def get_torrents_details(self, filter_keyword: str) -> [dict]:
+        torrents = self.torrent_client.torrents(filter=filter_keyword)
+        torrent_details_list = list()
         for torrent in torrents:
-            torrent_details_str += f"""
-            ========================================================
-            Torrent Name: \t{torrent["name"]} \n
-            Hash: \t{torrent["hash"]} \n
-            Num of seeds: \t{torrent["num_seeds"]} \n
-            File Size: \t{torrent["total_size"]} \n
-            Download speed: \t{torrent["dlspeed"]}/s \n
-            ========================================================
-            """
-        return torrent_details_str
+            torrent_details = {
+                "torrent_name": torrent['name'],
+                "hash": torrent['hash'],
+                "num_of_seeds": torrent['num_seeds'],
+                "file_size":self.get_size_format(torrent['total_size']),
+                "download_speed": self.get_size_format(torrent['dlspeed'])
+            }
+            torrent_details_list.append(torrent_details)
+        return torrent_details_list
 
     def wait_for_thread_to_finish(self):
         self.download_torrent_thread.join()
