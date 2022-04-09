@@ -1,6 +1,6 @@
 import logging
 import os
-from flask import Flask, request, render_template, url_for
+from flask import Flask, request, render_template, url_for, redirect
 from config import Config
 from torrent_downloader import TorrentDownloader
 from werkzeug.utils import secure_filename
@@ -17,6 +17,7 @@ def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
     return render_template('index.html', title="Homepage", torrents=torrent_details_list)
 
+
 @app.route('/download_torrent', methods=["GET", 'POST'])
 def download_torrent():
     if request.method == 'GET':
@@ -28,7 +29,7 @@ def download_torrent():
         uploaded_file.save(file_path)
         logger.info(f"Uploaded {filename} to {app.config['UPLOAD_PATH']}")
         torrent_downloader.add_to_download_torrent_queue(file_path)
-    return url_for('/')
+    return redirect(url_for('/'))
 
 
 

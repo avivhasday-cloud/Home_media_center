@@ -16,11 +16,11 @@
         <tbody>
           {% for torrent in torrents %}
             <tr>
-              <td>{{ user.torrent_name }}</td>
-              <td>{{ user.hash }}</td>
-              <td>{{ user.num_of_seeds }}</td>
-              <td>{{ user.file_size }}</td>
-              <td>{{ user.download_speed }}</td>
+              <td>{{ torrent.torrent_name }}</td>
+              <td>{{ torrent.hash }}</td>
+              <td>{{ torrent.num_of_seeds }}</td>
+              <td>{{ torrent.file_size }}</td>
+              <td>{{ torrent.download_speed }}</td>
             </tr>
           {% endfor %}
         </tbody>

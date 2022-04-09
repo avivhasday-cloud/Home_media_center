@@ -3,8 +3,8 @@
 
 {% block content %}
     <h2>Upload torrent to add to download Queue</h2>
-    <form action="/download_torrent" method="post">
-      <input type="file" id="myFile" name="filename">
+    <form action="/download_torrent" method="post" enctype="multipart/form-data">
+      <input type="file" id="file" name="file">
       <input type="submit">
     </form>
 
