@@ -21,7 +21,7 @@ class TorrentDownloader:
             self.logger.info(f"Added {torrent_file_path} to download torrent queue")
         except Exception as e:
             self.logger.error(f"Failed to Add {torrent_file_path} to download torrent queue")
-            self.logger.error(e.__traceback__)
+            self.logger.error(e)
 
 
     @staticmethod
@@ -53,7 +53,7 @@ class TorrentDownloader:
                     self.logger.info(f"Started downloaded torrent {torrent_file_path} Successfully ")
                 except Exception as e:
                     self.logger.error(f"Failed to start download torrent {torrent_file_path}")
-                    self.logger.error(e.__traceback__)
+                    self.logger.error(e)
                 torrent_file.close()
 
 
