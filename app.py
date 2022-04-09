@@ -20,17 +20,15 @@ def index():
 
 @app.route('/download_torrent', methods=["GET", 'POST'])
 def download_torrent():
-    if request.method == 'GET':
-        return render_template('download_torrent.html', title="Download torrent")
-    uploaded_file = request.files['file']
-    filename = secure_filename(uploaded_file.filename)
-    if filename != '':
-        file_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-        uploaded_file.save(file_path)
-        logger.info(f"Uploaded {filename} to {app.config['UPLOAD_PATH']}")
-        torrent_downloader.add_to_download_torrent_queue(file_path)
-    return redirect(url_for('/'))
-
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)
+        if filename != '':
+            file_path = os.path.join(app.config['UPLOAD_PATH'], filename)
+            uploaded_file.save(file_path)
+            logger.info(f"Uploaded {filename} to {app.config['UPLOAD_PATH']}")
+            torrent_downloader.add_to_download_torrent_queue(file_path)
+    return render_template('download_torrent.html', title="Download torrent")
 
 
 if __name__ == '__main__':
