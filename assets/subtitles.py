@@ -7,9 +7,9 @@ class Subtitles(BaseAsset):
                  _id: str = None,
                  name: str = None,
                  directory_path: str = None,
-                 movie_id: str = None):
+                 asset_id: str = None):
         super(Subtitles, self).__init__(_id, name, directory_path)
-        self.movie_id = movie_id
+        self.asset_id = asset_id
 
-    def get_movie_id(self):
-        return self.movie_id
+    def get_asset_id(self):
+        return self.asset_id
