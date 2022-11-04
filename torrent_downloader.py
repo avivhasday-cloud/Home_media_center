@@ -12,15 +12,15 @@ class TorrentDownloader:
         self.output_dir = output_dir
         self.logger = logger
         self.download_torrent_queue = Queue()
-        self.download_torrent_thread = Thread(target=self.download_torrent_from_file)
+        self.download_torrent_thread = Thread(target=self.download_torrent_from_magnet_link)
         self.download_torrent_thread.start()
 
-    def add_to_download_torrent_queue(self, torrent_file_path: str):
+    def add_to_download_torrent_queue(self, torrent_dict: dict):
         try:
-            self.download_torrent_queue.put(torrent_file_path)
-            self.logger.info(f"Added {torrent_file_path} to download torrent queue")
+            self.download_torrent_queue.put(torrent_dict)
+            self.logger.info(f"Added {torrent_dict['name']} to download torrent queue")
         except Exception as e:
-            self.logger.error(f"Failed to Add {torrent_file_path} to download torrent queue")
+            self.logger.error(f"Failed to Add {torrent_dict['name']} to download torrent queue")
             self.logger.error(e)
 
 
@@ -38,23 +38,22 @@ class TorrentDownloader:
             b /= factor
         return f"{b:.2f}Y{suffix}"
 
-    def download_torrent_from_file(self):
+    def download_torrent_from_magnet_link(self):
         while True:
             try:
-                torrent_file_path = self.download_torrent_queue.get(timeout=20)
-                self.logger.info(f"Getting torrent : {torrent_file_path} from Queue")
+                torrent_dict = self.download_torrent_queue.get(timeout=20)
+                torrent_name = torrent_dict['name']
+                self.logger.info(f"Getting torrent : {torrent_name} from Queue")
                 self.logger.info(f"Number of torrents in queue: {len(self.download_torrent_queue.queue)}")
             except Exception:
                 continue
-            if os.path.exists(torrent_file_path):
-                torrent_file = open(torrent_file_path, 'rb')
-                try:
-                    self.torrent_client.download_from_file(torrent_file, save_path=self.output_dir)
-                    self.logger.info(f"Started downloaded torrent {torrent_file_path} Successfully ")
-                except Exception as e:
-                    self.logger.error(f"Failed to start download torrent {torrent_file_path}")
-                    self.logger.error(e)
-                torrent_file.close()
+            try:
+                torrent_dir = os.path.join(self.output_dir, torrent_name)
+                self.torrent_client.download_from_link(torrent_dict["torrent_magnet_link"], save_path=torrent_dir)
+            except Exception as e:
+                self.logger.error(f"Failed to start download torrent {torrent_name}")
+                self.logger.error(e)
+
 
 
     def get_torrents_details(self, filter_keyword: str) -> [dict]:

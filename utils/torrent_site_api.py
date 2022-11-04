@@ -25,7 +25,3 @@ class TorrentSiteAPI:
         return res.text
 
 
-if __name__ == '__main__':
-
-    table_content = TorrentSiteAPI.get_search_query_content("marvel collection")
-    print()
