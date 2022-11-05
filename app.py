@@ -16,7 +16,7 @@ torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PA
 @app.route('/', methods=["GET"])
 def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    return render_template('table.html', title="Homepage", data=torrent_details_list, headers=list(torrent_details_list.keys()))
+    return render_template('table.html', title="Homepage", data=torrent_details_list, headers=list(torrent_details_list[0].keys()))
 
 
 @app.route('/download_torrent', methods=["GET", 'POST'])
