@@ -16,7 +16,7 @@ torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PA
 @app.route('/', methods=["GET"])
 def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    print(list(torrent_details_list[0].keys()))
+    # print(list(torrent_details_list[0].keys()))
     headers = ["bla", "bla2", "bla3"]
     data = [{"bla": "bla_value", "bla2": "bla2_value", "bla3": "bla3_value"},  {"meow": "meow_value", "meow2": "meow2_value", "meow3": "meow3_value"}]
     return render_template('table.html', title="Homepage", headers=headers, data=data)
