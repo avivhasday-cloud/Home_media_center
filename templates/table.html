@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% from "macros.html" import data_table %}
+
+
+{% block content %}
+    <h1>Home media center</h1>
+    {{ data_table(headers, data) }}
+{% endblock %}

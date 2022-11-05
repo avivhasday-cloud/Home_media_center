@@ -12,10 +12,11 @@ logger = logging
 logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PASSWORD, Config.OUTPUT_PATH, logger)
 
+
 @app.route('/', methods=["GET"])
 def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    return render_template('index.html', title="Homepage", torrents=torrent_details_list)
+    return render_template('table.html', title="Homepage", data=torrent_details_list, headers=list(torrent_details_list.keys()))
 
 
 @app.route('/download_torrent', methods=["GET", 'POST'])
