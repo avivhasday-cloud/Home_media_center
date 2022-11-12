@@ -84,7 +84,6 @@ class TorrentDownloader:
                 "download_speed": self.get_size_format(torrent['dlspeed'])
             }
             torrent_details_list.append(torrent_details)
-        self.torrent_client.logout()
         return torrent_details_list
 
     def wait_for_thread_to_finish(self):
