@@ -3,6 +3,8 @@ import os
 from flask import Flask, request, render_template, url_for, redirect
 from config import Config
 from torrent_downloader import TorrentDownloader
+from utils.torrent_site_api import TorrentSiteAPI
+from utils.bs4_parser import BS4Parser
 from werkzeug.utils import secure_filename
 
 
@@ -16,10 +18,17 @@ torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PA
 @app.route('/', methods=["GET"])
 def index():
     torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    # print(list(torrent_details_list[0].keys()))
-    headers = ["bla", "bla2", "bla3"]
-    data = [{"bla": "bla_value", "bla2": "bla2_value", "bla3": "bla3_value"},  {"meow": "meow_value", "meow2": "meow2_value", "meow3": "meow3_value"}]
-    return render_template('table.html', title="Homepage", headers=headers, data=data)
+    return render_template('table.html', title="Homepage", headers=list(torrent_details_list[0].keys()), data=torrent_details_list)
+
+
+@app.route("/browse_torrents", methods=["GET", "POST"])
+def browse_torrents():
+    headers = BS4Parser.TABLE_CELLS_KEYS
+    torrents_table_list = None
+    if request.method == 'POST':
+        keyword_to_search = request.form.get("search", "")
+        torrents_table_list = TorrentSiteAPI.get_search_query_content(keyword_to_search)
+    return render_template('table.html', title="Homepage", headers=headers, data=torrents_table_list)
 
 
 @app.route('/download_torrent', methods=["GET", 'POST'])

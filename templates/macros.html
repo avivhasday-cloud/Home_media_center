@@ -23,6 +23,8 @@
 {% macro data_table(headers, data) %}
     <table>
         {{ heading_row(headers) }}
-        {{ data_row(data) }}
+        {% if data is defined %}
+            {{ data_row(data) }}
+        {% endif %}
     </table>
 {% endmacro %}
