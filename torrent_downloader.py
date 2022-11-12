@@ -24,7 +24,6 @@ class TorrentDownloader:
             self.logger.error(f"Failed to Add {torrent_dict['name']} to download torrent queue")
             self.logger.error(e)
 
-
     @staticmethod
     def get_size_format(b, factor: int = 1024, suffix: str = "B") -> str:
         """
@@ -54,10 +53,13 @@ class TorrentDownloader:
                                           lambda: self.torrent_client.download_from_link(torrent_dict["torrent_magnet_link"], save_path=torrent_dir))
 
     def resume_downloading_torrent(self, torrent: dict):
-        self.run_operation_on_torrent(torrent["name"], "resume", lambda x: self.torrent_client.resume(torrent["info_hash"]))
+        self.run_operation_on_torrent(torrent["name"], "resume", lambda: self.torrent_client.resume(torrent["hash"]))
 
     def pause_downloading_torrent(self, torrent: dict):
-        self.run_operation_on_torrent(torrent["name"], "pause", lambda x: self.torrent_client.pause(torrent["info_hash"]))
+        self.run_operation_on_torrent(torrent["name"], "pause", lambda: self.torrent_client.pause(torrent["hash"]))
+
+    def remove_torrent_and_its_contents(self, torrent: dict):
+        self.run_operation_on_torrent(torrent["name"], "remove", lambda: self.torrent_client.delete_permanently(torrent["hash"]))
 
     def run_operation_on_torrent(self, name: str, operation_name: str, func):
         try:
@@ -70,6 +72,7 @@ class TorrentDownloader:
             self.torrent_client.logout()
 
     def get_torrents_details(self, filter_keyword: str) -> [dict]:
+        self.torrent_client.login(self.user, self.password)
         torrents = self.torrent_client.torrents(filter=filter_keyword)
         torrent_details_list = list()
         for torrent in torrents:
@@ -81,6 +84,7 @@ class TorrentDownloader:
                 "download_speed": self.get_size_format(torrent['dlspeed'])
             }
             torrent_details_list.append(torrent_details)
+        self.torrent_client.logout()
         return torrent_details_list
 
     def wait_for_thread_to_finish(self):

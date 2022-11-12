@@ -23,7 +23,7 @@
 {% macro data_table(headers, data) %}
     <table>
         {{ heading_row(headers) }}
-        {% if data is defined %}
+        {% if data != None %}
             {{ data_row(data) }}
         {% endif %}
     </table>
