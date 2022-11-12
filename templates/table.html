@@ -2,14 +2,15 @@
 {% from "macros.html" import data_table %}
 
 
-<!-- The form -->
-<form class="search_torrents_form" action="{{ url_for('browse_torrents') }}">
-  <input type="text" placeholder="Search.." name="search">
-  <button type="submit"><i class="fa fa-search"></i></button>
-</form>
-<br>
+
 
 {% block content %}
     <h1>Home media center</h1>
+    <!-- The form -->
+    <form class="search_torrents_form" action="{{ url_for('browse_torrents') }}">
+      <input type="text" placeholder="Search.." name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+    </form>
+    <br>
     {{ data_table(headers, data) }}
 {% endblock %}

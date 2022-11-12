@@ -21,7 +21,7 @@
 {% endmacro %}
 
 {% macro data_table(headers, data) %}
-    <table>
+    <table id="base_table" class="table table-striped">
         {{ heading_row(headers) }}
         {% if data != None %}
             {{ data_row(data) }}

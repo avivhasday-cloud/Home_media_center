@@ -54,15 +54,15 @@ li a:hover:not(.active) {
   width: 100%;
 }
 
-#torrents td, #customers th {
+#base_table td, #base_table th {
   border: 1px solid #ddd;
 }
 
-#customers tr:nth-child(even){background-color: #f2f2f2;}
+#base_table tr:nth-child(even){background-color: #f2f2f2;}
 
-#customers tr:hover {background-color: #ddd;}
+#base_table tr:hover {background-color: #ddd;}
 
-#torrents th {
+#base_table th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
