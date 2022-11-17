@@ -7,7 +7,8 @@
 {% block content %}
     <h1>Home media center</h1>
     <!-- The form -->
-    <form class="search_torrents_form" action="{{ url_for('browse_torrents') }}">
+    <br>
+    <form class="search_torrents_form" action="{{ url_for('browse_torrents') }}" method="POST">
       <input type="text" placeholder="Search.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>
