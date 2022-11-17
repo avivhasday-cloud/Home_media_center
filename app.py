@@ -23,7 +23,7 @@ def index():
 
 @app.route("/browse_torrents", methods=["GET", "POST"])
 def browse_torrents():
-    headers = BS4Parser.TABLE_CELLS_KEYS
+    headers = BS4Parser.TABLE_CELLS_KEYS[1::]
     torrents_table_list = None
     if request.method == 'POST':
         keyword_to_search = request.form.get("search", "")
