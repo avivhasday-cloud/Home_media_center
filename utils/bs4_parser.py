@@ -33,7 +33,7 @@ class BS4Parser:
     def extract_magnet_link_from_movie_page(row_dict: dict, movie_page_content: str):
         soup = BeautifulSoup(movie_page_content, BS4Parser.HTML_PARSER)
         table = soup.find("table", {"class": "tlista"})
-        download_row = table.findAll("tr")[-1]
+        download_row = table.findAll("tr")[0]
         cell = download_row.find("td", {"class": "tlista"})
-        a_tag = cell.find("a")
+        a_tag = cell.findAll("a")[-1]
         row_dict["torrent_magnet_link"] = a_tag.attrs["href"]
