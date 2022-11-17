@@ -16,6 +16,7 @@ class TorrentSiteAPI:
         for item in table_content:
             movie_page = TorrentSiteAPI._get_movie_page_content(item["movie_link"])
             BS4Parser.extract_magnet_link_from_movie_page(item, movie_page)
+            del item["movie_link"]
         return table_content
 
     @staticmethod
