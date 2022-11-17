@@ -31,16 +31,9 @@ def browse_torrents():
     return render_template('table.html', title="Homepage", headers=headers, data=torrents_table_list)
 
 
-@app.route('/download_torrent', methods=["GET", 'POST'])
-def download_torrent():
-    if request.method == 'POST':
-        uploaded_file = request.files['file']
-        filename = secure_filename(uploaded_file.filename)
-        if filename != '':
-            file_path = os.path.join(app.config['UPLOAD_PATH'], filename)
-            uploaded_file.save(file_path)
-            logger.info(f"Uploaded {filename} to {app.config['UPLOAD_PATH']}")
-            torrent_downloader.add_to_download_torrent_queue(file_path)
+@app.route('/download_torrent/<dict: row>', methods=['POST'])
+def download_torrent(row: dict):
+    torrent_downloader.add_to_download_torrent_queue(row)
     return render_template('download_torrent.html', title="Download torrent")
 
 

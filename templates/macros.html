@@ -8,23 +8,21 @@
     </thead>
 {% endmacro %}
 
-{% macro download_button(link) %}
-   <form>
-       <button value="{{ link }}">Download</button>
-   </form>
-{% endmacro %}
 
 {% macro data_row(data) %}
     <tbody>
       {% for row in data %}
         <tr>
-          {% for cell in row.values() %}
-                {%  if cell.startswith('magnet') %}
-                    <td>{{ download_button(cell) }}</td>
-                {% else %}
-                    <td>{{ cell }}</td>
-                {% endif %}
-          {% endfor %}
+          <form class="download_torrent_form" action="{{ url_for('download_torrent') row=row}}" method="POST">
+                {% for key, cell in row.items() %}
+                    {%  if cell.startswith('magnet') %}
+                        <td><button type="submit" name="{{ key }}" value="{{ cell }}">Download</button></td>
+                    {% else %}
+                        <td name="{{ key }}">{{ cell }}</td>
+                    {% endif %}
+                {% endfor %}
+          </form>
+
         </tr>
       {% endfor %}
     </tbody>

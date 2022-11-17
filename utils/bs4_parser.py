@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 class BS4Parser:
 
     HTML_PARSER = "html.parser"
-    TABLE_CELLS_KEYS = ["movie_link", "movie_name", "category", "secondary_category", "uploaded_date", "size", "seeders", "leechers", "uploader", "torrent_magnet_link"]
+    TABLE_CELLS_KEYS = ["movie_link", "name", "category", "secondary_category", "uploaded_date", "size", "seeders", "leechers", "uploader", "torrent_magnet_link"]
 
     @staticmethod
     def parse_table_content_to_dict(html_page_text: str) -> [dict]:
