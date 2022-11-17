@@ -20,7 +20,7 @@
         <tr>
           {% for cell in row.values() %}
                 {%  if cell.startswith('magnet') %}
-                    download_button(cell)
+                    {{ download_button(cell) }}
                 {% else %}
                     <td>{{ cell }}</td>
                 {% endif %}
