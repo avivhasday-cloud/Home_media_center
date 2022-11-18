@@ -13,15 +13,13 @@
     <tbody>
       {% for row in data %}
         <tr>
-          <form class="download_torrent_form" action="{{ url_for('download_torrent')}}" method="POST">
-                {% for key, cell in row.items() %}
-                    {%  if cell.startswith('magnet') %}
-                        <td><button type="submit" name="{{ key }}" value="{{ cell }}">Download</button></td>
-                    {% else %}
-                        <td name="{{ key }}">{{ cell }}</td>
-                    {% endif %}
-                {% endfor %}
-          </form>
+            {% for key, cell in row.items() %}
+                {%  if cell.startswith('magnet') %}
+                    <td><button type="submit" name="{{ key }}" value="{{ cell }}" onclick="on_download_button_clicked( {{url_for('download_torrent')}, {{ row }}})">Download</button></td>
+                {% else %}
+                    <td name="{{ key }}">{{ cell }}</td>
+                {% endif %}
+            {% endfor %}
 
         </tr>
       {% endfor %}
