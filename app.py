@@ -35,6 +35,7 @@ def browse_torrents():
 def download_torrent():
     torrent_data = request.get_json()
     app.logger.info(torrent_data)
+    torrent_downloader.add_to_download_torrent_queue(torrent_data)
     return render_template('download_torrent.html', title="Download torrent")
 
 
