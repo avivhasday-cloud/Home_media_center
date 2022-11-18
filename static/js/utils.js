@@ -4,10 +4,10 @@ function onDownloadButtonClicked(url_for, data){
         url: url_for,
         type: 'POST',
         data: JSON.jsonify(data),
-        headers: {"content-type": "application/json"}
+        headers: {"content-type": "application/json"},
         success: function (response) {
             console.log('success');
-        }
+        },
         error: function (response) {
             console.log('success');
 
