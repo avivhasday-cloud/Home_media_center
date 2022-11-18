@@ -1,5 +1,5 @@
 
-function on_download_button_clicked(url_for, data){
+function onDownloadButtonClicked(url_for, data){
     $.ajax({
         url: url_for,
         type: 'POST',
