@@ -28,7 +28,24 @@
         {% block content %}
         {% endblock %}
     </div>
-    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}">
+        function onDownloadButtonClicked(url_for, data){
+            $.ajax({
+                url: url_for,
+                type: 'POST',
+                data: JSON.jsonify(data),
+                headers: {"content-type": "application/json"}
+                success: function (response) {
+                    console.log('success');
+                }
+                error: function (response) {
+                    console.log('success');
+
+                }
+            })
+
+        }
+    </script>
 </body>
 
 </html>
