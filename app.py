@@ -31,9 +31,10 @@ def browse_torrents():
     return render_template('table.html', title="Homepage", headers=headers, data=torrents_table_list)
 
 
-@app.route('/download_torrent/<dict: row>', methods=['POST'])
-def download_torrent(row: dict):
-    torrent_downloader.add_to_download_torrent_queue(row)
+@app.route('/download_torrent/', methods=['POST'])
+def download_torrent():
+    torrent_data = request.form
+    print(torrent_data)
     return render_template('download_torrent.html', title="Download torrent")
 
 
