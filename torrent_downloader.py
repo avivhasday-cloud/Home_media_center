@@ -68,8 +68,6 @@ class TorrentDownloader:
         except Exception as e:
             self.logger.error(f"Failed to {operation_name} torrent {name}")
             self.logger.error(e)
-        finally:
-            self.torrent_client.logout()
 
     def get_torrents_details(self, filter_keyword: str) -> [dict]:
         self.torrent_client.login(self.user, self.password)
