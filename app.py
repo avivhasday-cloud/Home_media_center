@@ -1,43 +1,32 @@
 import logging
-import os
-from flask import Flask, request, render_template, url_for, redirect
-from config import Config
+import configurations
 from torrent_downloader import TorrentDownloader
-from utils.torrent_site_api import TorrentSiteAPI
-from utils.bs4_parser import BS4Parser
-from werkzeug.utils import secure_filename
+from utils.flask_utils.flask_utilities import FlaskUtilities
+from utils.flask_utils.base_flask import BaseFlask
+from utils.ext import LOGGER
+from api.torrents.torrents_blueprint import torrents_bp
+from api.torrents.torrents_view_blueprint import torrents_view_bp
 
 
-app = Flask(__name__, static_url_path='')
-app.config.from_object('config.ServerConfig')
-logger = logging
-logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-torrent_downloader = TorrentDownloader(Config.SERVER_URL, Config.USER, Config.PASSWORD, Config.OUTPUT_PATH, logger)
 
 
-@app.route('/', methods=["GET"])
-def index():
-    torrent_details_list = torrent_downloader.get_torrents_details("downloading")
-    return render_template('table.html', title="Homepage", headers=list(torrent_details_list[0].keys()), data=torrent_details_list)
 
 
-@app.route("/browse_torrents", methods=["GET", "POST"])
-def browse_torrents():
-    headers = BS4Parser.TABLE_CELLS_KEYS[1::]
-    torrents_table_list = None
-    if request.method == 'POST':
-        keyword_to_search = request.form.get("search", "")
-        torrents_table_list = TorrentSiteAPI.get_search_query_content(keyword_to_search)
-    return render_template('table.html', title="Homepage", headers=headers, data=torrents_table_list)
+class VODApi(BaseFlask):
+
+    def __init__(self, name: str, logger: logging.Logger, config: str):
+        super(VODApi, self).__init__(name, logger)
+        self.load_from_config(config)
 
 
-@app.route('/download_torrent/', methods=['POST'])
-def download_torrent():
-    torrent_data = request.get_json()
-    app.logger.info(torrent_data)
-    torrent_downloader.add_to_download_torrent_queue(torrent_data)
-    return render_template('download_torrent.html', title="Download torrent")
+        FlaskUtilities.register_blueprint_to_app(self._app, torrents_bp)
+        FlaskUtilities.register_blueprint_to_app(self._app, torrents_view_bp)
+
+
+def main():
+    app = VODApi("VOD API", LOGGER, "configurations.DevConfig")
+    app.run("0.0.0.0", port=5001, debug=True)
 
 
 if __name__ == '__main__':
-    app.run("0.0.0.0", port=5001, debug=True)
+    main()
