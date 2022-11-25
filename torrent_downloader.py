@@ -6,6 +6,9 @@ from threading import Thread
 
 
 class TorrentDownloader:
+
+    TORRENT_DETAILS_KEYS = ['torrent_name', 'hash', 'num_of_seeds', 'file_size', 'download_speed']
+
     def __init__(self, server_url: str, user: str, password: str, output_dir: str, logger: logging = None):
         self.torrent_client = Client(server_url)
         self.output_dir = output_dir
@@ -16,13 +19,15 @@ class TorrentDownloader:
         self.download_torrent_thread = Thread(target=self.download_torrent_from_magnet_link)
         self.download_torrent_thread.start()
 
-    def add_to_download_torrent_queue(self, torrent_dict: dict):
+    def add_to_download_torrent_queue(self, torrent_dict: dict) -> bool:
         try:
             self.download_torrent_queue.put(torrent_dict)
             self.logger.info(f"Added {torrent_dict['name']} to download torrent queue")
+            return True
         except Exception as e:
             self.logger.error(f"Failed to Add {torrent_dict['name']} to download torrent queue")
             self.logger.error(e)
+            return False
 
     @staticmethod
     def get_size_format(b, factor: int = 1024, suffix: str = "B") -> str:
@@ -65,22 +70,26 @@ class TorrentDownloader:
         try:
             self.torrent_client.login(self.user, self.password)
             func()
+            return_value = True
         except Exception as e:
             self.logger.error(f"Failed to {operation_name} torrent {name}")
             self.logger.error(e)
+            return_value = False
+        return return_value
 
     def get_torrents_details(self, filter_keyword: str) -> [dict]:
         self.torrent_client.login(self.user, self.password)
         torrents = self.torrent_client.torrents(filter=filter_keyword)
         torrent_details_list = list()
         for torrent in torrents:
-            torrent_details = {
+            torrent_details = {key: None for key in TorrentDownloader.TORRENT_DETAILS_KEYS}
+            torrent_details.update({
                 "torrent_name": torrent['name'],
                 "hash": torrent['hash'],
                 "num_of_seeds": torrent['num_seeds'],
-                "file_size":self.get_size_format(torrent['total_size']),
+                "file_size": self.get_size_format(torrent['total_size']),
                 "download_speed": self.get_size_format(torrent['dlspeed'])
-            }
+            })
             torrent_details_list.append(torrent_details)
         return torrent_details_list
 

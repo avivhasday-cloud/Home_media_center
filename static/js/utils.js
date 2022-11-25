@@ -9,7 +9,7 @@ function onDownloadButtonClicked(url_for, data){
             console.log('success');
         },
         error: function (response) {
-            console.log('success');
+            console.log('error');
 
         }
     })
