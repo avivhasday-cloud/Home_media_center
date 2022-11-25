@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h1>{{ message }}</h1>
+    <a href="{{ url_for('torrents_view_bp.browse_view') }}">Back to Homepage</a>
+
+{% endblock %}
+
