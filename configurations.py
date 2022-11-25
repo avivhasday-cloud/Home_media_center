@@ -2,7 +2,13 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-class Config:
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATES_DIR = os.path.join(ROOT_DIR, 'templates')
+STATIC_DIR = os.path.join(ROOT_DIR, 'static')
+
+
+class BaseConfig:
     env_path = Path('.') / '.env'
     load_dotenv(dotenv_path=env_path)
 
@@ -12,6 +18,10 @@ class Config:
     USER = os.getenv("USER")
     PASSWORD = os.getenv("PASSWORD")
     OUTPUT_PATH = os.getenv('OUTPUT_PATH')
+
+
+class DevConfig(BaseConfig):
+    DEBUG = True
 
 
 class ServerConfig:
