@@ -16,7 +16,7 @@
             {% for key, cell in row.items() %}
                 {%  if cell.startswith('magnet') %}
                     <td>
-                        <button type="submit" name="{{ key }}" value="{{ cell }}" onclick="onDownloadButtonClicked( {{ url_for('torrents_view_bp.download') }}, {{ row }})">
+                        <button type="submit" name="{{ key }}" value="{{ cell }}" onclick="onDownloadButtonClicked({{url_for('torrents_view_bp.download')}}, {{ row }})">
                             Download
                         </button>
                     </td>
