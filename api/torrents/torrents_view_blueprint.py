@@ -17,6 +17,8 @@ class TorrentsViewBlueprint(Blueprint):
 
     ]
 
+    NAME = "torrents_view_bp"
+
     def __init__(self,
                  name: str,
                  import_name: str,
@@ -30,6 +32,7 @@ class TorrentsViewBlueprint(Blueprint):
     @staticmethod
     def browse_view(**kwargs):
         res, status_code = TorrentsBlueprint.browse(**kwargs)
+        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["download"]})
         return render_template('browse_view.html', title='Browse Torrents', **res), status_code
 
     @staticmethod
@@ -47,11 +50,13 @@ class TorrentsViewBlueprint(Blueprint):
     def resume(**kwargs):
         text, status_code = TorrentsBlueprint.resume(**kwargs)
         res, _ = TorrentsBlueprint.get_details(**kwargs)
+        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["resume", "pause", "remove"]})
         return render_template('torrent_client_view.html', title='Torrent Client', **res), status_code
 
     @staticmethod
     def get_details(**kwargs):
         res, status_code = TorrentsBlueprint.get_details(**kwargs)
+        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["resume", "pause", "remove"]})
         return render_template('torrent_client_view.html', title='Torrent Client', **res), status_code
 
     @staticmethod

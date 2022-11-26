@@ -8,14 +8,23 @@
     </thead>
 {% endmacro %}
 
+{% macro buttons(button_names, bp, data) %}
+    {% for button_name in button_names %}
+        {% set url =  bp~ '.' ~button_name %}
+        <button type="submit" onclick="onButtonClicked({{ url_for(url) }}, row)">{{ button_name|capitalize }}</button>
+        <br>
+    {% endfor %}
+{% endmacro %}
 
-{% macro data_row(data) %}
+{% macro data_row(data, bp, button_names) %}
     <tbody>
       {% for row in data %}
         <tr>
             {% for key, cell in row.items() %}
                 {%  if cell.startswith('magnet') %}
-                    <td><button type="submit" onclick="onDownloadButtonClicked('{{ url_for('torrents_view_bp.download') }}', {{ row }})">Download</button></td>
+                <td>
+                    {{ buttons(button_names, bp, row) }}
+                </td>
                 {% else %}
                     <td>{{ cell }}</td>
                 {% endif %}
@@ -25,11 +34,11 @@
     </tbody>
 {% endmacro %}
 
-{% macro data_table(headers, data) %}
+{% macro data_table(headers, data, bp, button_names) %}
     <table id="base_table" class="table table-striped">
         {{ heading_row(headers) }}
         {% if data != None %}
-            {{ data_row(data) }}
+            {{ data_row(data, bp, button_names) }}
         {% endif %}
     </table>
 {% endmacro %}

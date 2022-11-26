@@ -1,5 +1,5 @@
 
-function onDownloadButtonClicked(url_for, selected_row_details){
+function onButtonClicked(url_for, selected_row_details){
     let data = {"torrent_details": selected_row_details};
     $.ajax({
         url: url_for,
