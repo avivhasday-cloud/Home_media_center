@@ -18,6 +18,7 @@ class TorrentDownloader:
         self.download_torrent_queue = Queue()
         self.download_torrent_thread = Thread(target=self.download_torrent_from_magnet_link)
         self.download_torrent_thread.start()
+        self.torrent_client.login(self.user, self.password)
 
     def add_to_download_torrent_queue(self, torrent_dict: dict) -> bool:
         try:
@@ -68,7 +69,6 @@ class TorrentDownloader:
 
     def run_operation_on_torrent(self, name: str, operation_name: str, func):
         try:
-            self.torrent_client.login(self.user, self.password)
             func()
             return_value = True
         except Exception as e:
@@ -78,7 +78,6 @@ class TorrentDownloader:
         return return_value
 
     def get_torrents_details(self, filter_keyword: str) -> [dict]:
-        self.torrent_client.login(self.user, self.password)
         torrents = self.torrent_client.torrents(filter=filter_keyword)
         torrent_details_list = list()
         for torrent in torrents:

@@ -15,7 +15,7 @@ class BaseConfig:
     TORRENT_CLIENT_IP = os.getenv('TORRENT_CLIENT_IP')
     PORT = os.getenv('PORT')
     SERVER_URL = f'http://{TORRENT_CLIENT_IP}:{PORT}/'
-    USER = os.getenv("USER")
+    USER = os.getenv("TORRENT_USER")
     PASSWORD = os.getenv("PASSWORD")
     OUTPUT_PATH = os.getenv('OUTPUT_PATH')
 

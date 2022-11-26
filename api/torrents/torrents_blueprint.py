@@ -43,7 +43,7 @@ class TorrentsBlueprint(Blueprint):
 
     @staticmethod
     def download(**kwargs):
-        torrent_data = kwargs.get("torrent_data", None)
+        torrent_data = kwargs.get("torrent_details", None)
         status = TORRENT_DOWNLOADER.add_to_download_torrent_queue(torrent_data)
         return (f"{torrent_data['name']} added to queue", HTTPStatus.CREATED) if status \
             else (f"Failed to add to queue {torrent_data['name']}", HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -74,7 +74,7 @@ class TorrentsBlueprint(Blueprint):
     @staticmethod
     def remove(**kwargs):
         torrent_details = kwargs.get("torrent_details", None)
-        status = torrent_downloader.remove_torrent_and_its_contents(torrent_details)
+        status = TORRENT_DOWNLOADER.remove_torrent_and_its_contents(torrent_details)
         return (f"{torrent_details['name']} has been removed", HTTPStatus.OK) if status \
             else (f"Failed to remove {torrent_details['name']}", HTTPStatus.INTERNAL_SERVER_ERROR)
 
