@@ -4,6 +4,8 @@ from flask import render_template
 from flask.blueprints import Blueprint
 from configurations import STATIC_DIR, TEMPLATES_DIR
 
+BLUEPRINT_NAME = "torrents_view_bp"
+
 
 class TorrentsViewBlueprint(Blueprint):
 
@@ -16,8 +18,6 @@ class TorrentsViewBlueprint(Blueprint):
         ('/', 'remove', ['DELETE']),
 
     ]
-
-    NAME = "torrents_view_bp"
 
     def __init__(self,
                  name: str,
@@ -32,7 +32,7 @@ class TorrentsViewBlueprint(Blueprint):
     @staticmethod
     def browse_view(**kwargs):
         res, status_code = TorrentsBlueprint.browse(**kwargs)
-        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["download"]})
+        res.update({"bp": BLUEPRINT_NAME, "button_names_to_methods_map": [{"download": "POST"}]})
         return render_template('browse_view.html', title='Browse Torrents', **res), status_code
 
     @staticmethod
@@ -43,20 +43,19 @@ class TorrentsViewBlueprint(Blueprint):
     @staticmethod
     def pause(**kwargs):
         text, status_code = TorrentsBlueprint.pause(**kwargs)
-        res, _ = TorrentsBlueprint.get_details(**kwargs)
-        return render_template('torrent_client_view.html', title='Torrent Client', **res), status_code
+        return TorrentsViewBlueprint.get_details(**kwargs)
+
 
     @staticmethod
     def resume(**kwargs):
         text, status_code = TorrentsBlueprint.resume(**kwargs)
-        res, _ = TorrentsBlueprint.get_details(**kwargs)
-        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["resume", "pause", "remove"]})
-        return render_template('torrent_client_view.html', title='Torrent Client', **res), status_code
+        return TorrentsViewBlueprint.get_details(**kwargs)
 
     @staticmethod
     def get_details(**kwargs):
         res, status_code = TorrentsBlueprint.get_details(**kwargs)
-        res.update({"bp": TorrentsViewBlueprint.NAME, "button_names": ["resume", "pause", "remove"]})
+        res.update({"bp": BLUEPRINT_NAME, "button_names_to_methods_map": [{"resume": "PUT"}, {"pause": "PUT"},
+                                                                          {"remove": "DELETE"}]})
         return render_template('torrent_client_view.html', title='Torrent Client', **res), status_code
 
     @staticmethod
@@ -65,4 +64,4 @@ class TorrentsViewBlueprint(Blueprint):
         return render_template('general_message.html', title='Homepage', message=text), status_code
 
 
-torrents_view_bp = TorrentsViewBlueprint("torrents_view_bp", __name__, static_folder=STATIC_DIR, template_folder=TEMPLATES_DIR, url_prefix='/views/torrents')
+torrents_view_bp = TorrentsViewBlueprint(BLUEPRINT_NAME, __name__, static_folder=STATIC_DIR, template_folder=TEMPLATES_DIR, url_prefix='/views/torrents')

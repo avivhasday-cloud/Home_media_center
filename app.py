@@ -19,7 +19,7 @@ class VODApi(BaseFlask):
 
 def main():
     app = VODApi("VOD API", LOGGER, "configurations.DevConfig")
-    app.run("0.0.0.0", port=5002, debug=True)
+    app.run("0.0.0.0", port=5003, debug=True)
 
 
 if __name__ == '__main__':

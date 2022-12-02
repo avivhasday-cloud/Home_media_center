@@ -1,1 +1,6 @@
 .env
+__pycache__/
+venv
+docker-compose.yaml
+Dockerfile
+.idea

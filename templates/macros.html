@@ -2,43 +2,43 @@
     <thead>
       <tr>
           {% for header in headers %}
-            <th>{{ header }}</th>
+            <th>{{ header|capitalize }}</th>
           {% endfor %}
+          <th>Actions</th>
       </tr>
     </thead>
 {% endmacro %}
 
-{% macro buttons(button_names, bp, data) %}
-    {% for button_name in button_names %}
-        {% set url =  bp~ '.' ~button_name %}
-        <button type="submit" onclick="onButtonClicked({{ url_for(url) }}, row)">{{ button_name|capitalize }}</button>
-        <br>
+{% macro buttons(button_names_to_methods_map, bp, data) %}
+    {% for button_name_to_method in button_names_to_methods_map %}
+        {% for button_name, method in button_name_to_method.items() %}
+            {% set url =  bp~ '.' ~button_name %}
+            <button type="submit" onclick="onButtonClicked('{{ url_for(url) }}', {{ data }}, '{{ method }}')">{{ button_name|capitalize }}</button>
+            <br>
+        {% endfor %}
     {% endfor %}
 {% endmacro %}
 
-{% macro data_row(data, bp, button_names) %}
+{% macro data_row(data, bp, button_names_to_methods_map) %}
     <tbody>
       {% for row in data %}
         <tr>
             {% for key, cell in row.items() %}
-                {%  if cell.startswith('magnet') %}
-                <td>
-                    {{ buttons(button_names, bp, row) }}
-                </td>
-                {% else %}
+                {%  if key != "torrent_magnet_link" %}
                     <td>{{ cell }}</td>
                 {% endif %}
             {% endfor %}
+            <td>{{ buttons(button_names_to_methods_map, bp, row) }}</td>
         </tr>
       {% endfor %}
     </tbody>
 {% endmacro %}
 
-{% macro data_table(headers, data, bp, button_names) %}
+{% macro data_table(headers, data, bp, button_names_to_methods_map) %}
     <table id="base_table" class="table table-striped">
         {{ heading_row(headers) }}
         {% if data != None %}
-            {{ data_row(data, bp, button_names) }}
+            {{ data_row(data, bp, button_names_to_methods_map) }}
         {% endif %}
     </table>
 {% endmacro %}

@@ -208,7 +208,7 @@ class MongoHandler(GenericMongoDB):
             raise RuntimeError(f"Failed to update subtitles {subtitles_id}")
         self.logger.info(f"Updated Subtitles: {subtitles_id} successfully in DB!")
 
-    def insert_episodes(self, subtitles_list_to_insert: [dict]):
+    def insert_subtitles(self, subtitles_list_to_insert: [dict]):
         filtered_subtitles_list = self.get_filtered_list_of_documents_to_insert_to_collection(subtitles_list_to_insert, self.db.subtitles)
         self.logger.info(f"Inserting subtitles to DB!")
         inserted_ids = MongoHandler.insert_documents_to_collection(filtered_subtitles_list, self.db.subtitles)
@@ -218,7 +218,7 @@ class MongoHandler(GenericMongoDB):
             self.logger.info(f"Failed to insert all documents to DB, {len(inserted_ids)}/{len(filtered_subtitles_list)} inserted!")
         return inserted_ids
 
-    def delete_episodes(self, subtitles_id_to_delete: [int]):
+    def delete_subtitles(self, subtitles_id_to_delete: [int]):
         deleted_count = MongoHandler.delete_documents_from_collection(subtitles_id_to_delete, self.db.subtitles)
         if deleted_count < len(subtitles_id_to_delete):
             raise RuntimeError(f"Failed to remove all subtitles from db, deleted {deleted_count}/{len(subtitles_id_to_delete)} inserted!")
