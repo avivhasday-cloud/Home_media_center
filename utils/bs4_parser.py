@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
+from utils.common import Fields
 
 
 class BS4Parser:
 
     HTML_PARSER = "html.parser"
-    TABLE_CELLS_KEYS = ["movie_link", "name", "category", "secondary_category", "uploaded_date", "size", "seeders", "leechers", "uploader", "torrent_magnet_link"]
 
     @staticmethod
     def parse_table_content_to_dict(html_page_text: str) -> [dict]:
@@ -25,7 +25,7 @@ class BS4Parser:
                         row_list.append(item.text)
 
             row_list.append("")
-            row_dict = dict(zip(BS4Parser.TABLE_CELLS_KEYS, row_list))
+            row_dict = dict(zip(Fields.BROWSE_TORRENTS_HEADERS, row_list))
             table_content_list.append(row_dict)
         return table_content_list
 

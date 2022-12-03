@@ -8,7 +8,7 @@
     <h1>Torrent Client</h1>
     <!-- The form -->
     <br>
-    <form class="torrents_details_form" action="{{ url_for('torrents_view_bp.get_details') }}" method="GET">
+    <form class="torrents_details_form" action="{{ url_for('torrents_view_bp.get_details_view') }}" method="GET">
       <input type="text" placeholder="Enter a keyword to filter torrents.." name="filter_keyword">
       <button type="submit"><i class="fa fa-search"></i></button>
     </form>

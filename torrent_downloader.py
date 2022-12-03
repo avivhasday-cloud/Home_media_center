@@ -1,13 +1,9 @@
 import logging
-import os.path
-from queue import Queue
 from qbittorrent import Client
-from threading import Thread
+from utils.common import Fields
 
 
 class TorrentDownloader:
-
-    TORRENT_DETAILS_KEYS = ['name', 'hash', 'num_of_seeds', 'file_size', 'download_speed']
 
     def __init__(self, server_url: str, user: str, password: str, output_dir: str, logger: logging = None):
         self.torrent_client = Client(server_url)
@@ -15,21 +11,7 @@ class TorrentDownloader:
         self.user = user
         self.password = password
         self.logger = logger
-        self.download_torrent_queue = Queue()
-        self.finished_torrents_queue = Queue()
-        self.download_torrent_thread = Thread(target=self.download_torrent_from_magnet_link)
-        self.download_torrent_thread.start()
         self.torrent_client.login(self.user, self.password)
-
-    def add_to_download_torrent_queue(self, torrent_dict: dict) -> bool:
-        try:
-            self.download_torrent_queue.put(torrent_dict)
-            self.logger.info(f"Added {torrent_dict['name']} to download torrent queue")
-            return True
-        except Exception as e:
-            self.logger.error(f"Failed to Add {torrent_dict['name']} to download torrent queue")
-            self.logger.error(e)
-            return False
 
     @staticmethod
     def get_size_format(b, factor: int = 1024, suffix: str = "B") -> str:
@@ -45,19 +27,9 @@ class TorrentDownloader:
             b /= factor
         return f"{b:.2f}Y{suffix}"
 
-    def download_torrent_from_magnet_link(self):
-        while True:
-            try:
-                torrent_dict = self.download_torrent_queue.get(timeout=20)
-                torrent_name = torrent_dict['name']
-                self.logger.info(f"Getting torrent : {torrent_name} from Queue")
-                self.logger.info(f"Number of torrents in queue: {len(self.download_torrent_queue.queue)}")
-            except Exception:
-                continue
-            torrent_dir = os.path.join(self.output_dir)
-            os.makedirs(torrent_dir, exist_ok=True)
-            self.run_operation_on_torrent(torrent_dict['name'], "start downloading",
-                                          lambda: self.torrent_client.download_from_link(torrent_dict["torrent_magnet_link"], save_path=torrent_dir))
+    def download_torrent_from_magnet_link(self, torrent_dict: dict):
+        self.run_operation_on_torrent(torrent_dict['name'], "start downloading",
+                                      lambda: self.torrent_client.download_from_link(torrent_dict["torrent_magnet_link"], save_path=self.output_dir))
 
     def resume_downloading_torrent(self, torrent: dict) -> bool:
         return self.run_operation_on_torrent(torrent["name"], "resume", lambda: self.torrent_client.resume(torrent["hash"]))
@@ -78,23 +50,23 @@ class TorrentDownloader:
             return_value = False
         return return_value
 
-    def get_torrents_details(self, filter_keyword: str) -> [dict]:
-        torrents = self.torrent_client.torrents(filter=filter_keyword)
+    def get_torrents_details(self, filter_keyword: str = None) -> [dict]:
+        torrents = self.get_filtered_torrents(filter_keyword)
         torrent_details_list = list()
         for torrent in torrents:
-            torrent_details = {key: None for key in TorrentDownloader.TORRENT_DETAILS_KEYS}
+            torrent_details = {key: None for key in Fields.TORRENT_DETAILS_HEADERS}
             torrent_details.update({
                 "name": torrent['name'],
                 "hash": torrent['hash'],
                 "num_of_seeds": torrent['num_seeds'],
+                "file_path": torrent["content_path"],
                 "file_size": self.get_size_format(torrent['total_size']),
-                "download_speed": self.get_size_format(torrent['dlspeed'])
+                "download_speed": self.get_size_format(torrent['dlspeed']),
+                "state": torrent["state"]
             })
             torrent_details_list.append(torrent_details)
         return torrent_details_list
 
+    def get_filtered_torrents(self, keyword: str = None):
+        return self.torrent_client.torrents(filter=keyword)
 
-
-    def wait_for_thread_to_finish(self):
-        self.download_torrent_thread.join()
-        self.logger.info(f"Download torrent thread has finished")
